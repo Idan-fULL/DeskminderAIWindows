@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <circle cx="64" cy="64" r="60" fill="#4CAF50" />
+  <circle cx="64" cy="64" r="45" fill="#3e8e41" />
+  <circle cx="64" cy="64" r="30" fill="#2d682f" />
+  <!-- Clock hands -->
+  <line x1="64" y1="64" x2="64" y2="34" stroke="white" stroke-width="6" stroke-linecap="round" />
+  <line x1="64" y1="64" x2="84" y2="64" stroke="white" stroke-width="6" stroke-linecap="round" />
+  <!-- Plus symbol -->
+  <rect x="39" y="88" width="50" height="10" rx="5" fill="white" />
+  <rect x="59" y="68" width="10" height="50" rx="5" fill="white" />
+</svg> 
