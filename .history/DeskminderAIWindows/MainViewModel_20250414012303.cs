@@ -83,7 +83,6 @@ namespace DeskminderAI
             Name = "New Reminder";
             Minutes = 5;
             EndTime = DateTime.Now.AddMinutes(Minutes);
-            DisplayTime = $"{Minutes}m";
             InitializeTimer();
         }
 
@@ -92,7 +91,6 @@ namespace DeskminderAI
             Name = name;
             Minutes = minutes;
             EndTime = DateTime.Now.AddMinutes(minutes);
-            DisplayTime = $"{Minutes}m";
             InitializeTimer();
         }
 

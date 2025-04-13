@@ -778,39 +778,26 @@ namespace DeskminderAI
                 Console.WriteLine("RemoveReminderButton_Click event triggered");
                 
                 // Get the reminder ID from the button's Tag
-                if (sender is Button button)
+                if (sender is Button button && button.Tag is string reminderIdStr)
                 {
-                    Guid reminderId;
-                    
-                    // Handle both string and Guid types in tag
-                    if (button.Tag is Guid guidId)
+                    // Parse the string ID to a Guid
+                    if (Guid.TryParse(reminderIdStr, out Guid reminderId))
                     {
-                        reminderId = guidId;
-                    }
-                    else if (button.Tag is string reminderIdStr && Guid.TryParse(reminderIdStr, out Guid parsedId))
-                    {
-                        reminderId = parsedId;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid reminder ID format");
-                        return;
-                    }
-                    
-                    // Find and remove the reminder
-                    var reminderToRemove = ViewModel.Reminders.FirstOrDefault(r => r.Id == reminderId);
-                    if (reminderToRemove != null)
-                    {
-                        Console.WriteLine($"Removing reminder: {reminderToRemove.Name}");
-                        
-                        // Stop the timer to avoid memory leaks
-                        reminderToRemove.StopTimer();
-                        
-                        // Remove from collection
-                        ViewModel.Reminders.Remove(reminderToRemove);
-                        
-                        // Save reminders
-                        ViewModel.SaveReminders();
+                        // Find and remove the reminder
+                        var reminderToRemove = ViewModel.Reminders.FirstOrDefault(r => r.Id == reminderId);
+                        if (reminderToRemove != null)
+                        {
+                            Console.WriteLine($"Removing reminder: {reminderToRemove.Name}");
+                            
+                            // Stop the timer to avoid memory leaks
+                            reminderToRemove.StopTimer();
+                            
+                            // Remove from collection
+                            ViewModel.Reminders.Remove(reminderToRemove);
+                            
+                            // Save reminders
+                            ViewModel.SaveReminders();
+                        }
                     }
                 }
             }

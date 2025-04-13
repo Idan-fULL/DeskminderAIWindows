@@ -171,9 +171,11 @@
                     <Grid>
                         <!-- Original duration and reminder name -->
                         <StackPanel Orientation="Vertical">
-                            <TextBlock Text="{Binding DisplayTime, StringFormat='({0})'}" 
-                                     Foreground="#AAAAAA"
-                                     FontSize="12"/>
+                            <TextBlock>
+                                <Run Text="(" FontWeight="Normal" Foreground="#AAAAAA"/>
+                                <Run Text="{Binding DisplayTime}" FontWeight="Normal" Foreground="#AAAAAA"/>
+                                <Run Text=")" FontWeight="Normal" Foreground="#AAAAAA"/>
+                            </TextBlock>
                             <TextBlock Text="{Binding Name}" 
                                       Foreground="White" 
                                       FontSize="14" 
