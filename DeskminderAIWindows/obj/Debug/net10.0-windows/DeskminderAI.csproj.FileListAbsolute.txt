@@ -1,3 +1,9 @@
+C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\DeskminderAI.csproj.AssemblyReference.cache
+C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\Styles\Styles.baml
+C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\App.g.cs
+C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\DeskminderAI_MarkupCompile.cache
+C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\DeskminderAI_MarkupCompile.lref
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net10.0-windows\DeskminderAI.exe
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net10.0-windows\DeskminderAI.dll.config
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net10.0-windows\DeskminderAI.deps.json
@@ -6,13 +12,7 @@ C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net10.0-windows\De
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net10.0-windows\DeskminderAI.pdb
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net10.0-windows\Hardcodet.NotifyIcon.Wpf.dll
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net10.0-windows\Newtonsoft.Json.dll
-C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\DeskminderAI.csproj.AssemblyReference.cache
-C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\Styles\Styles.baml
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\MainWindow.g.cs
-C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\App.g.cs
-C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\GeneratedInternalTypeHelper.g.cs
-C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\DeskminderAI_MarkupCompile.cache
-C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\DeskminderAI_MarkupCompile.lref
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\App.baml
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\MainWindow.baml
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\DeskminderAI.g.resources

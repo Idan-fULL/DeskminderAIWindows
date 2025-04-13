@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Console</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>DeskminderAI</RootNamespace>
+    <!-- Temporarily removing ApplicationIcon until we have a valid icon -->
+    <!-- <ApplicationIcon>Images\icon.ico</ApplicationIcon> -->
+    <Title>DeskminderAI</Title>
+    <Authors>DeskminderAI</Authors>
+    <Company>DeskminderAI</Company>
+    <Description>A reminder widget that stays on the side of your screen</Description>
+    <Copyright>Copyright © 2025</Copyright>
+    <NeutralLanguage>en</NeutralLanguage>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\icon.ico" />
+    <None Remove="Images\icon.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" />
+  </ItemGroup>
+
+</Project> 

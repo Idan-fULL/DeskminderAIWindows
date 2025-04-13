@@ -1,0 +1,548 @@
+<Window x:Class="DeskminderAI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DeskminderAI"
+        xmlns:viewmodels="clr-namespace:DeskminderAI.ViewModels"
+        xmlns:converters="clr-namespace:DeskminderAI.Converters"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
+        mc:Ignorable="d"
+        Title="DeskminderAI" 
+        Height="50" 
+        Width="50"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Topmost="True"
+        Loaded="Window_Loaded"
+        MouseDown="Window_MouseDown"
+        Closing="Window_Closing">
+    
+    <Window.Resources>
+        <converters:SliderValueToWidthConverter x:Key="SliderValueToWidthConverter"/>
+        <viewmodels:MainViewModel x:Key="MainVM"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        
+        <!-- Fallback resources in case Styles.xaml fails to load -->
+        <SolidColorBrush x:Key="FallbackPrimaryBrush" Color="#4CAF50"/>
+        <SolidColorBrush x:Key="FallbackBackgroundBrush" Color="#1e1e1e"/>
+        <SolidColorBrush x:Key="FallbackTextBrush" Color="#FFFFFF"/>
+        
+        <!-- Neon glow effect -->
+        <DropShadowEffect x:Key="NeonGlowEffect" 
+                          ShadowDepth="0" 
+                          Color="#00FFFF" 
+                          Opacity="0.7" 
+                          BlurRadius="15"/>
+        
+        <Style x:Key="NeonAIButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width" Value="48"/>
+            <Setter Property="Height" Value="48"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <!-- Dark Background Circle -->
+                            <Ellipse Fill="#202025" Width="48" Height="48"/>
+                            
+                            <!-- Neon outer ring -->
+                            <Ellipse Width="46" Height="46" 
+                                    Stroke="#00FFFF" 
+                                    StrokeThickness="2"
+                                    Effect="{StaticResource NeonGlowEffect}"/>
+                            
+                            <!-- AI Text -->
+                            <TextBlock Text="AI" 
+                                      Foreground="#00FFFF" 
+                                      FontWeight="Bold" 
+                                      FontSize="22"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Effect="{StaticResource NeonGlowEffect}"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.9"/>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="1.1" ScaleY="1.1"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.9" ScaleY="0.9"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="FallbackCircleButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource FallbackPrimaryBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource FallbackTextBrush}"/>
+            <Setter Property="Width" Value="42"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="21"
+                                BorderThickness="0">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="FallbackRoundedButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource FallbackPrimaryBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource FallbackTextBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                BorderThickness="0">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="12,8"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="FallbackCloseButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#000000"/>
+            <Setter Property="Foreground" Value="{StaticResource FallbackTextBrush}"/>
+            <Setter Property="Width" Value="18"/>
+            <Setter Property="Height" Value="18"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="9"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="0">
+                            <TextBlock Text="×"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontSize="12"
+                                       FontWeight="Bold"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="FallbackInputTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="#333333"/>
+            <Setter Property="Foreground" Value="{StaticResource FallbackTextBrush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="5"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    
+    <Window.DataContext>
+        <StaticResource ResourceKey="MainVM"/>
+    </Window.DataContext>
+    
+    <Grid x:Name="RootGrid">
+        <!-- States -->
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="AppStates">
+                <!-- Icon Only State -->
+                <VisualState x:Name="IconOnlyState">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="AddButtonOnly" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TimerPanel" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ReminderPanel" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveRemindersPanel" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+                <!-- Timer State -->
+                <VisualState x:Name="TimerState">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="AddButtonOnly" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TimerPanel" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ReminderPanel" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveRemindersPanel" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+                <!-- Reminder Name State -->
+                <VisualState x:Name="ReminderState">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="AddButtonOnly" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TimerPanel" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ReminderPanel" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveRemindersPanel" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+                <!-- Active Reminders State -->
+                <VisualState x:Name="ActiveRemindersState">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="AddButtonOnly" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TimerPanel" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ReminderPanel" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveRemindersPanel" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        
+        <!-- Floating Add Button (Icon-only mode) -->
+        <Button x:Name="AddButtonOnly" 
+                Width="40" 
+                Height="40"
+                Visibility="Visible"
+                Click="AddButtonOnly_Click"
+                ToolTip="Add Reminder">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <!-- Green Circle Background -->
+                        <Ellipse Fill="#4CAF50" Width="40" Height="40"/>
+                        
+                        <!-- Plus Symbol -->
+                        <TextBlock Text="+" 
+                                  Foreground="White" 
+                                  FontWeight="Bold" 
+                                  FontSize="24"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Margin="0,0,0,2"/>
+                    </Grid>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+        
+        <!-- Timer Selection Panel -->
+        <Border x:Name="TimerPanel"
+                Background="#333333"
+                CornerRadius="20"
+                Width="170"
+                Height="40"
+                Visibility="Collapsed">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Close Button -->
+                <Button Grid.Column="0" 
+                        Width="24" 
+                        Height="24"
+                        Margin="8,0,0,0"
+                        Click="CloseTimer_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Grid>
+                                <Ellipse Fill="#222222" Width="24" Height="24"/>
+                                <TextBlock Text="✕" 
+                                          Foreground="White" 
+                                          FontSize="14"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                
+                <!-- Timer Display and Drag Area -->
+                <Grid Grid.Column="1" 
+                      x:Name="TimerDragCanvas"
+                      Background="Transparent"
+                      MouseDown="TimerDragCanvas_MouseDown"
+                      MouseMove="TimerDragCanvas_MouseMove"
+                      MouseUp="TimerDragCanvas_MouseUp">
+                    
+                    <!-- Timer Text -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="⏱️" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <TextBlock x:Name="TimerValueText" 
+                                   Text="{Binding NewReminderMinutes, StringFormat='{}{0} min'}" 
+                                   Foreground="White"
+                                   FontSize="14"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+                
+                <!-- Next Button -->
+                <Button Grid.Column="2" 
+                        Width="32" 
+                        Height="32"
+                        Margin="0,0,4,0"
+                        Click="NextToReminder_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Grid>
+                                <Ellipse Fill="#4CAF50" Width="32" Height="32"/>
+                                <TextBlock Text="❯" 
+                                          Foreground="White" 
+                                          FontSize="16"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
+        </Border>
+        
+        <!-- Reminder Name Panel -->
+        <Border x:Name="ReminderPanel"
+                Background="#333333"
+                CornerRadius="20"
+                Width="240"
+                Height="40"
+                Visibility="Collapsed">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Back Button -->
+                <Button Grid.Column="0" 
+                        Width="24" 
+                        Height="24"
+                        Margin="8,0,0,0"
+                        Click="BackToTimer_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Grid>
+                                <Ellipse Fill="#222222" Width="24" Height="24"/>
+                                <TextBlock Text="✕" 
+                                          Foreground="White" 
+                                          FontSize="14"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                
+                <!-- Reminder Name Input -->
+                <TextBox Grid.Column="1"
+                         Text="{Binding NewReminderName, UpdateSourceTrigger=PropertyChanged}"
+                         VerticalAlignment="Center"
+                         Margin="5,0"
+                         Foreground="White"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         FontSize="14">
+                    <TextBox.Resources>
+                        <Style TargetType="{x:Type TextBox}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type TextBox}">
+                                        <Border Background="{TemplateBinding Background}" 
+                                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                                BorderThickness="{TemplateBinding BorderThickness}">
+                                            <ScrollViewer x:Name="PART_ContentHost"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TextBox.Resources>
+                </TextBox>
+                
+                <!-- Add Reminder Button -->
+                <Button Grid.Column="2" 
+                        Width="32" 
+                        Height="32"
+                        Margin="0,0,4,0"
+                        Click="AddReminder_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Grid>
+                                <Ellipse Fill="#4CAF50" Width="32" Height="32"/>
+                                <TextBlock Text="✓" 
+                                          Foreground="White" 
+                                          FontSize="16"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
+        </Border>
+        
+        <!-- Active Reminders Panel -->
+        <Border x:Name="ActiveRemindersPanel"
+                Background="Transparent"
+                Width="70"
+                Height="150"
+                Visibility="Collapsed">
+            <StackPanel>
+                <!-- Display the active reminder timer -->
+                <Border Background="#333333"
+                        CornerRadius="20"
+                        Width="Auto"
+                        Height="40"
+                        Margin="5">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="40"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <!-- Close Button -->
+                        <Button Grid.Column="0" 
+                                Width="24" 
+                                Height="24"
+                                Margin="8,0,0,0"
+                                Click="RemoveReminderButton_Click">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Grid>
+                                        <Ellipse Fill="#222222" Width="24" Height="24"/>
+                                        <TextBlock Text="✕" 
+                                                  Foreground="White" 
+                                                  FontSize="14"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                        
+                        <!-- Timer Display -->
+                        <TextBlock Grid.Column="1" 
+                                   Text="{Binding SelectedReminder.TimeLeft}"
+                                   Foreground="White"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="14"/>
+                        
+                        <!-- Reminder Icon -->
+                        <Button Grid.Column="2" 
+                                Width="32" 
+                                Height="32"
+                                Margin="0,0,4,0"
+                                ToolTip="{Binding SelectedReminder.Name}">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Grid>
+                                        <Ellipse Fill="#4CAF50" Width="32" Height="32"/>
+                                        <TextBlock Text="⏰" 
+                                                  Foreground="White" 
+                                                  FontSize="16"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </Grid>
+                </Border>
+                
+                <!-- Add New Reminder Button -->
+                <Button Width="40" 
+                        Height="40"
+                        Margin="0,10,0,0"
+                        HorizontalAlignment="Center"
+                        Click="AddButtonOnly_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Grid>
+                                <!-- Green Circle Background -->
+                                <Ellipse Fill="#4CAF50" Width="40" Height="40"/>
+                                
+                                <!-- Plus Symbol -->
+                                <TextBlock Text="+" 
+                                          Foreground="White" 
+                                          FontWeight="Bold" 
+                                          FontSize="24"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Margin="0,0,0,2"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </StackPanel>
+        </Border>
+        
+        <!-- System Tray Icon -->
+        <tb:TaskbarIcon x:Name="TaskbarIcon"
+                       ToolTipText="DeskminderAI"
+                       TrayLeftMouseDown="TaskbarIcon_TrayLeftMouseDown"
+                       Visibility="Visible">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Exit" Click="ExitMenuItem_Click"/>
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
+    </Grid>
+</Window> 
