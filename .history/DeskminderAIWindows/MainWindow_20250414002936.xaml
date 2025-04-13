@@ -1,0 +1,271 @@
+<Window x:Class="DeskminderAI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
+        xmlns:local="clr-namespace:DeskminderAI"
+        xmlns:converters="clr-namespace:DeskminderAI.Converters"
+        mc:Ignorable="d"
+        Title="תזכורות"
+        Height="300" Width="180"
+        Background="Transparent"
+        AllowsTransparency="True"
+        WindowStyle="None"
+        ShowInTaskbar="False"
+        Topmost="True"
+        ResizeMode="NoResize"
+        FlowDirection="RightToLeft"
+        MouseDown="Window_MouseDown"
+        Loaded="Window_Loaded"
+        Closing="Window_Closing">
+
+    <Window.Resources>
+        <!-- Converters -->
+        <converters:TimerFormatConverter x:Key="TimerFormatConverter"/>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        
+        <!-- Button Templates -->
+        <LinearGradientBrush x:Key="GreenGradient" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#64DD17" Offset="0"/>
+            <GradientStop Color="#43A047" Offset="1"/>
+        </LinearGradientBrush>
+        
+        <LinearGradientBrush x:Key="RedGradient" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#F44336" Offset="0"/>
+            <GradientStop Color="#D32F2F" Offset="1"/>
+        </LinearGradientBrush>
+        
+        <LinearGradientBrush x:Key="BlueGradient" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#2196F3" Offset="0"/>
+            <GradientStop Color="#1976D2" Offset="1"/>
+        </LinearGradientBrush>
+        
+        <!-- Close Button Template -->
+        <ControlTemplate x:Key="CloseButtonTemplate" TargetType="Button">
+            <Border x:Name="border" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" CornerRadius="15">
+                <Grid>
+                    <Ellipse x:Name="circle" Fill="#333333" Width="24" Height="24"/>
+                    <Path x:Name="closeIcon" Data="M 8,8 L 16,16 M 16,8 L 8,16" Stroke="White" StrokeThickness="2" 
+                          StrokeLineCap="Round" StrokeLineJoin="Round" Margin="0,0,0,0" />
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="circle" Property="Fill" Value="#E53935"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter TargetName="circle" Property="Fill" Value="#C62828"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        
+        <!-- Confirm Button Template -->
+        <ControlTemplate x:Key="ConfirmButtonTemplate" TargetType="Button">
+            <Border x:Name="border" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" CornerRadius="15">
+                <Grid>
+                    <Ellipse x:Name="circle" Fill="#333333" Width="24" Height="24"/>
+                    <Path x:Name="checkIcon" Data="M 7,12 L 10,15 L 17,8" Stroke="White" StrokeThickness="2" 
+                          StrokeLineCap="Round" StrokeLineJoin="Round" Margin="0,0,0,0" />
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="circle" Property="Fill" Value="#43A047"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter TargetName="circle" Property="Fill" Value="#2E7D32"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        
+        <!-- Add Button Template -->
+        <ControlTemplate x:Key="AddButtonTemplate" TargetType="Button">
+            <Border x:Name="border" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" CornerRadius="20">
+                <Grid>
+                    <Ellipse x:Name="circle" Fill="#333333" Width="40" Height="40"/>
+                    <Path x:Name="plusIcon" Data="M 20,13 L 20,27 M 13,20 L 27,20" Stroke="White" StrokeThickness="2" 
+                          StrokeLineCap="Round" StrokeLineJoin="Round" Margin="0,0,0,0" />
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="circle" Property="Fill" Value="#43A047"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter TargetName="circle" Property="Fill" Value="#2E7D32"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        
+        <!-- Remove Reminder Button Template -->
+        <ControlTemplate x:Key="RemoveReminderButtonTemplate" TargetType="Button">
+            <Border x:Name="border" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" CornerRadius="10">
+                <Grid>
+                    <Ellipse x:Name="circle" Fill="#333333" Width="20" Height="20"/>
+                    <Path x:Name="closeIcon" Data="M 7,7 L 13,13 M 13,7 L 7,13" Stroke="White" StrokeThickness="1.5" 
+                          StrokeLineCap="Round" StrokeLineJoin="Round" Margin="0,0,0,0" />
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="circle" Property="Fill" Value="#E53935"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter TargetName="circle" Property="Fill" Value="#C62828"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        
+        <!-- Visual States for Window -->
+        <Style TargetType="{x:Type Border}" x:Key="TimerDisplayStyle">
+            <Setter Property="Background" Value="#333333"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Cursor" Value="SizeWE"/>
+        </Style>
+    </Window.Resources>
+    
+    <Window.DataContext>
+        <local:MainViewModel/>
+    </Window.DataContext>
+    
+    <Grid Margin="0">
+        <!-- Define Visual States for the Application -->
+        <VisualStateManager.VisualStates>
+            <VisualStateGroup x:Name="WindowStates">
+                <!-- Icon Only State - Shows just the add button -->
+                <VisualState x:Name="IconOnlyState">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="AddButtonOnly" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TimerCloseButton" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TimerConfirmButton" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+                
+                <!-- Timer State - Shows the timer input interface -->
+                <VisualState x:Name="TimerState">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="AddButtonOnly" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TimerCloseButton" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TimerConfirmButton" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStates>
+        
+        <!-- Main Background -->
+        <Border Background="#1A000000" CornerRadius="10" Margin="5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <!-- Timer Display - Click to drag -->
+                <Border x:Name="TimerDisplay" 
+                        Style="{StaticResource TimerDisplayStyle}"
+                        MouseDown="TimerDragCanvas_MouseDown"
+                        MouseMove="TimerDragCanvas_MouseMove"
+                        MouseUp="TimerDragCanvas_MouseUp"
+                        Grid.Row="0">
+                    <TextBlock Text="{Binding NewReminderMinutes, StringFormat='{}{0} דקות'}" 
+                               FontSize="20" 
+                               Foreground="White" 
+                               TextAlignment="Center" 
+                               VerticalAlignment="Center" 
+                               FontWeight="SemiBold"/>
+                </Border>
+                
+                <!-- Active Reminders Panel -->
+                <ScrollViewer Grid.Row="1" Margin="5" VerticalScrollBarVisibility="Auto">
+                    <StackPanel x:Name="ActiveRemindersPanel" Orientation="Vertical">
+                        <ItemsControl ItemsSource="{Binding Reminders}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#333333" CornerRadius="8" Margin="0,2" Padding="8,5">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <TextBlock Grid.Column="0" 
+                                                       Text="{Binding RemainingTimeText}" 
+                                                       Foreground="White" 
+                                                       FontWeight="SemiBold"
+                                                       VerticalAlignment="Center"/>
+                                            
+                                            <Button Grid.Column="1" 
+                                                    Template="{StaticResource RemoveReminderButtonTemplate}"
+                                                    Click="RemoveReminderButton_Click"
+                                                    Tag="{Binding Id}"
+                                                    Margin="5,0,0,0"
+                                                    VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
+                
+                <!-- Timer Control Buttons - Only visible in timer state -->
+                <Button x:Name="TimerCloseButton" 
+                        Template="{StaticResource CloseButtonTemplate}" 
+                        Click="CloseTimer_Click"
+                        VerticalAlignment="Top" 
+                        HorizontalAlignment="Left"
+                        Margin="15,10,0,0" 
+                        Panel.ZIndex="100"
+                        Visibility="Collapsed"/>
+                
+                <Button x:Name="TimerConfirmButton" 
+                        Template="{StaticResource ConfirmButtonTemplate}" 
+                        Click="AddReminder_Click"
+                        VerticalAlignment="Top" 
+                        HorizontalAlignment="Right"
+                        Margin="0,10,15,0" 
+                        Panel.ZIndex="100"
+                        Visibility="Collapsed"/>
+                
+                <!-- Add Button - Only visible in icon-only state -->
+                <Button x:Name="AddButtonOnly" 
+                        Template="{StaticResource AddButtonTemplate}" 
+                        Click="AddButtonOnly_Click"
+                        VerticalAlignment="Top" 
+                        HorizontalAlignment="Right"
+                        Margin="0,10,15,0" 
+                        Panel.ZIndex="100"/>
+            </Grid>
+        </Border>
+        
+        <!-- Taskbar Icon -->
+        <tb:TaskbarIcon x:Name="TaskbarIcon"
+                         ToolTipText="תזכורות"
+                         TrayLeftMouseDown="TaskbarIcon_TrayLeftMouseDown"
+                         MenuActivation="RightClick"
+                         Visibility="Visible">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="יציאה" Click="ExitMenuItem_Click" />
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
+    </Grid>
+</Window> 

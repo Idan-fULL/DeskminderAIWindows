@@ -1,0 +1,405 @@
+<Window x:Class="DeskminderAI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DeskminderAI"
+        xmlns:viewmodels="clr-namespace:DeskminderAI.ViewModels"
+        xmlns:converters="clr-namespace:DeskminderAI.Converters"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
+        mc:Ignorable="d"
+        Title="DeskminderAI" 
+        Height="300" 
+        Width="50"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Topmost="True"
+        Loaded="Window_Loaded"
+        MouseDown="Window_MouseDown"
+        Closing="Window_Closing">
+    
+    <Window.Resources>
+        <converters:SliderValueToWidthConverter x:Key="SliderValueToWidthConverter"/>
+        <viewmodels:MainViewModel x:Key="MainVM"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        
+        <!-- Gradient brushes -->
+        <LinearGradientBrush x:Key="MainBackgroundBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#333333" Offset="0"/>
+            <GradientStop Color="#222222" Offset="1"/>
+        </LinearGradientBrush>
+        
+        <LinearGradientBrush x:Key="AddButtonBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#64AF50" Offset="0"/>
+            <GradientStop Color="#568C43" Offset="1"/>
+        </LinearGradientBrush>
+        
+        <LinearGradientBrush x:Key="AddButtonHoverBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#75C05E" Offset="0"/>
+            <GradientStop Color="#64AF50" Offset="1"/>
+        </LinearGradientBrush>
+        
+        <LinearGradientBrush x:Key="CloseButtonBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#E04646" Offset="0"/>
+            <GradientStop Color="#C53030" Offset="1"/>
+        </LinearGradientBrush>
+        
+        <LinearGradientBrush x:Key="TimerBackgroundBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#333333" Offset="0"/>
+            <GradientStop Color="#1A1A1A" Offset="1"/>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="ActiveReminderBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#333333" Offset="0"/>
+            <GradientStop Color="#222222" Offset="1"/>
+        </LinearGradientBrush>
+        
+        <LinearGradientBrush x:Key="ConfirmButtonBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#4285F4" Offset="0"/>
+            <GradientStop Color="#3367D6" Offset="1"/>
+        </LinearGradientBrush>
+        
+        <DropShadowEffect x:Key="ButtonShadow" 
+                          ShadowDepth="3" 
+                          Direction="270"
+                          Color="Black" 
+                          Opacity="0.3" 
+                          BlurRadius="8"/>
+        
+        <!-- Add Button Style -->
+        <Style x:Key="AddButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Background" Value="{StaticResource AddButtonBrush}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Ellipse Fill="{TemplateBinding Background}" />
+                            <TextBlock Text="+" 
+                                       FontSize="{TemplateBinding FontSize}" 
+                                       Foreground="{TemplateBinding Foreground}" 
+                                       FontWeight="{TemplateBinding FontWeight}" 
+                                       HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource AddButtonHoverBrush}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <!-- Close Button Style -->
+        <Style x:Key="CloseButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="24"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Background" Value="{StaticResource CloseButtonBrush}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Ellipse Fill="{TemplateBinding Background}" />
+                            <TextBlock Text="✖" 
+                                       FontSize="{TemplateBinding FontSize}" 
+                                       Foreground="{TemplateBinding Foreground}" 
+                                       HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- Confirm Button Style -->
+        <Style x:Key="ConfirmButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource ConfirmButtonBrush}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="13" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="1"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- Timer Display Style -->
+        <Style x:Key="TimerDisplayStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource TimerBackgroundBrush}"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Effect" Value="{StaticResource ButtonShadow}"/>
+        </Style>
+        
+        <!-- Reminder Button Style -->
+        <Style x:Key="ReminderButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource ActiveReminderBrush}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Margin" Value="0,4"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="16" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="1"
+                                Padding="12,5"
+                                Effect="{StaticResource ButtonShadow}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                <Button Grid.Column="1" 
+                                        Width="20" Height="20" 
+                                        Margin="5,0,0,0"
+                                        Tag="{Binding Id}"
+                                        Click="RemoveReminderButton_Click"
+                                        Style="{StaticResource CloseButtonStyle}"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- Main Container -->
+        <StackPanel Orientation="Vertical">
+            <!-- Compact Timer Display (initial view) -->
+            <Border x:Name="TimerDisplay"
+                    Style="{StaticResource TimerDisplayStyle}"
+                    Width="Auto"
+                    Height="Auto"
+                    HorizontalAlignment="Left"
+                    Margin="5,5,0,8"
+                    Visibility="Visible"
+                    MouseDown="TimerDisplay_MouseDown">
+                <TextBlock Text="{Binding NewReminderMinutes, StringFormat='{}{0} min'}" 
+                           Foreground="White" 
+                           FontSize="16" 
+                           FontWeight="Medium"
+                           Margin="2,0"/>
+            </Border>
+            
+            <!-- Timer Selection Panel -->
+            <Border x:Name="TimerPanel"
+                    Background="{StaticResource MainBackgroundBrush}"
+                    CornerRadius="16"
+                    Width="170"
+                    Height="Auto"
+                    Visibility="Collapsed"
+                    VerticalAlignment="Top"
+                    Margin="5,5,0,12"
+                    Padding="12"
+                    Effect="{StaticResource ButtonShadow}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Header with Close Button -->
+                    <Grid Grid.Row="0">
+                        <Button Style="{StaticResource CloseButtonStyle}" 
+                                HorizontalAlignment="Right" 
+                                VerticalAlignment="Top" 
+                                Click="CloseTimer_Click"/>
+                    </Grid>
+                    
+                    <!-- Timer Drag Interface -->
+                    <Canvas x:Name="TimerDragCanvas" 
+                            Grid.Row="1" 
+                            Background="#444444" 
+                            Height="30" 
+                            CornerRadius="15"
+                            Margin="0,10,0,0"
+                            MouseDown="TimerDragCanvas_MouseDown"
+                            MouseMove="TimerDragCanvas_MouseMove"
+                            MouseUp="TimerDragCanvas_MouseUp">
+                        <TextBlock Text="{Binding NewReminderMinutes, StringFormat='{}{0} min'}" 
+                                   Foreground="White" 
+                                   Canvas.Left="10" 
+                                   Canvas.Top="5"/>
+                    </Canvas>
+                    
+                    <!-- Reminder Text Input -->
+                    <TextBox Grid.Row="2" 
+                             Text="{Binding NewReminderName, UpdateSourceTrigger=PropertyChanged}" 
+                             Margin="0,10,0,0" 
+                             Padding="5"
+                             Background="#333333"
+                             Foreground="White"
+                             BorderThickness="0"
+                             CornerRadius="8"
+                             FontSize="14"/>
+                    
+                    <!-- Button Panel -->
+                    <StackPanel Grid.Row="3" 
+                                Orientation="Horizontal" 
+                                HorizontalAlignment="Right" 
+                                Margin="0,10,0,0">
+                        <Button Content="Done" 
+                                Style="{StaticResource ConfirmButtonStyle}" 
+                                Click="AddReminder_Click"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            
+            <!-- Active Reminders Panel -->
+            <StackPanel x:Name="ActiveRemindersPanel"
+                       Orientation="Vertical"
+                       HorizontalAlignment="Left"
+                       Visibility="Visible"
+                       Margin="0,10,0,0">
+                <!-- Reminders will be added here dynamically -->
+                <ItemsControl ItemsSource="{Binding Reminders}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{StaticResource ActiveReminderBrush}"
+                                    CornerRadius="16"
+                                    Margin="5,4,5,4"
+                                    Padding="12,8"
+                                    Effect="{StaticResource ButtonShadow}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" 
+                                               Text="{Binding Name}" 
+                                               Foreground="White" 
+                                               VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" 
+                                               Text="{Binding TimeLeftDisplay}" 
+                                               Foreground="#AAAAAA" 
+                                               Margin="8,0,8,0" 
+                                               VerticalAlignment="Center"/>
+                                    <Button Grid.Column="2"
+                                            Width="20" Height="20"
+                                            Tag="{Binding Id}"
+                                            Click="RemoveReminderButton_Click"
+                                            Style="{StaticResource CloseButtonStyle}"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+            
+            <!-- Floating Add Button -->
+            <Grid HorizontalAlignment="Left" Margin="5,8,0,0">
+                <Button x:Name="AddButtonOnly" 
+                        Style="{StaticResource AddButtonStyle}"
+                        Visibility="Visible"
+                        Click="AddButtonOnly_Click"
+                        ToolTip="Add Reminder" />
+            </Grid>
+        </StackPanel>
+        
+        <!-- System Tray Icon -->
+        <tb:TaskbarIcon x:Name="TaskbarIcon"
+                       ToolTipText="DeskminderAI"
+                       TrayLeftMouseDown="TaskbarIcon_TrayLeftMouseDown"
+                       Visibility="Visible">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="הגדרות" />
+                    <Separator />
+                    <MenuItem Header="יציאה" Click="ExitMenuItem_Click" />
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
+    </Window.Resources>
+    
+    <Window.DataContext>
+        <StaticResource ResourceKey="MainVM"/>
+    </Window.DataContext>
+    
+    <Grid x:Name="RootGrid">
+        <!-- States -->
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="AppStates">
+                <!-- Icon Only State -->
+                <VisualState x:Name="IconOnlyState">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="AddButtonOnly" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TimerPanel" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ReminderPanel" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveRemindersPanel" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+                <!-- Timer State -->
+                <VisualState x:Name="TimerState">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="AddButtonOnly" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TimerPanel" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ReminderPanel" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveRemindersPanel" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+                <!-- Reminder Name State -->
+                <VisualState x:Name="ReminderState">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="AddButtonOnly" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TimerPanel" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ReminderPanel" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveRemindersPanel" Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
+</Window> 

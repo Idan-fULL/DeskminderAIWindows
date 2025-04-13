@@ -1,9 +1,5 @@
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net8.0-windows\DeskminderAI.exe
-C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net8.0-windows\DeskminderAI.dll.config
-C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net8.0-windows\DeskminderAI.deps.json
-C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net8.0-windows\DeskminderAI.runtimeconfig.json
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net8.0-windows\DeskminderAI.dll
-C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net8.0-windows\DeskminderAI.pdb
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net8.0-windows\Hardcodet.NotifyIcon.Wpf.dll
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net8.0-windows\Newtonsoft.Json.dll
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net8.0-windows\DeskminderAI.csproj.AssemblyReference.cache
@@ -25,5 +21,9 @@ C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net8.0-windows\Des
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net8.0-windows\DeskminderAI.dll
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net8.0-windows\refint\DeskminderAI.dll
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net8.0-windows\DeskminderAI.pdb
+C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net8.0-windows\DeskminderAI.dll.config
+C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net8.0-windows\DeskminderAI.deps.json
+C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net8.0-windows\DeskminderAI.runtimeconfig.json
+C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net8.0-windows\DeskminderAI.pdb
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net8.0-windows\DeskminderAI.genruntimeconfig.cache
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net8.0-windows\ref\DeskminderAI.dll
