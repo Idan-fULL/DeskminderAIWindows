@@ -1,0 +1,8 @@
+C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Release\net10.0-windows\DeskminderAI.csproj.AssemblyReference.cache
+C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Release\net10.0-windows\Styles\Styles.baml
+C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Release\net10.0-windows\MainWindow.g.cs
+C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Release\net10.0-windows\App.g.cs
+C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Release\net10.0-windows\DeskminderAI_Content.g.cs
+C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Release\net10.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Release\net10.0-windows\DeskminderAI_MarkupCompile.cache
+C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Release\net10.0-windows\DeskminderAI_MarkupCompile.lref

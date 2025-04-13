@@ -1,13 +1,10 @@
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\DeskminderAI.csproj.AssemblyReference.cache
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\Styles\Styles.baml
+C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\MainWindow.g.cs
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\App.g.cs
-C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\DeskminderAI_Content.g.cs
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\GeneratedInternalTypeHelper.g.cs
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\DeskminderAI_MarkupCompile.cache
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\DeskminderAI_MarkupCompile.lref
-C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\MainWindow.g.cs
-C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net10.0-windows\Images\icon.ico
-C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net10.0-windows\Images\icon.svg
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net10.0-windows\DeskminderAI.exe
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net10.0-windows\DeskminderAI.dll.config
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\bin\Debug\net10.0-windows\DeskminderAI.deps.json
@@ -23,6 +20,7 @@ C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\De
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\DeskminderAI.AssemblyInfoInputs.cache
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\DeskminderAI.AssemblyInfo.cs
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\DeskminderAI.csproj.CoreCompileInputs.cache
+C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\DeskminderAI.sourcelink.json
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\Deskmind.6F5D3166.Up2Date
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\DeskminderAI.dll
 C:\Projects\deskminderaiwindows\DeskminderAIWindows\obj\Debug\net10.0-windows\refint\DeskminderAI.dll

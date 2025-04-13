@@ -9,6 +9,7 @@
       "DeskminderAI/1.0.0": {
         "dependencies": {
           "Hardcodet.NotifyIcon.Wpf": "1.1.0",
+          "Microsoft.Windows.SDK.BuildTools": "10.0.22621.756",
           "Newtonsoft.Json": "13.0.3"
         },
         "runtime": {
@@ -23,6 +24,7 @@
           }
         }
       },
+      "Microsoft.Windows.SDK.BuildTools/10.0.22621.756": {},
       "Newtonsoft.Json/13.0.3": {
         "runtime": {
           "lib/net6.0/Newtonsoft.Json.dll": {
@@ -45,6 +47,13 @@
       "sha512": "sha512-FFEkdRSidMrbMfQVwhCzq6KtSyR1qQojqtiUrkCyjnOOuMf7W3TNQkzFnBBxYxFe7uLk5mz7M38wFh1qdWyfvg==",
       "path": "hardcodet.notifyicon.wpf/1.1.0",
       "hashPath": "hardcodet.notifyicon.wpf.1.1.0.nupkg.sha512"
+    },
+    "Microsoft.Windows.SDK.BuildTools/10.0.22621.756": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7ZL2sFSioYm1Ry067Kw1hg0SCcW5kuVezC2SwjGbcPE61Nn+gTbH86T73G3LcEOVj0S3IZzNuE/29gZvOLS7VA==",
+      "path": "microsoft.windows.sdk.buildtools/10.0.22621.756",
+      "hashPath": "microsoft.windows.sdk.buildtools.10.0.22621.756.nupkg.sha512"
     },
     "Newtonsoft.Json/13.0.3": {
       "type": "package",
