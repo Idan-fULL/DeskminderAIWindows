@@ -138,7 +138,7 @@ namespace DeskminderAI
                 var canvas = new Canvas { Width = 32, Height = 32 };
                 
                 // Create a green sparkle-like icon
-                System.Windows.Shapes.Path sparkleCenter = new System.Windows.Shapes.Path
+                Path sparkleCenter = new Path
                 {
                     Data = Geometry.Parse("M12,3 L13.5,8.5 L19,10 L13.5,11.5 L12,17 L10.5,11.5 L5,10 L10.5,8.5 Z"),
                     Fill = new SolidColorBrush(WinColors.White),
@@ -695,26 +695,22 @@ namespace DeskminderAI
                 Console.WriteLine("RemoveReminderButton_Click event triggered");
                 
                 // Get the reminder ID from the button's Tag
-                if (sender is Button button && button.Tag is string reminderIdStr)
+                if (sender is Button button && button.Tag is string reminderId)
                 {
-                    // Parse the string ID to a Guid
-                    if (Guid.TryParse(reminderIdStr, out Guid reminderId))
+                    // Find and remove the reminder
+                    var reminderToRemove = ViewModel.Reminders.FirstOrDefault(r => r.Id == reminderId);
+                    if (reminderToRemove != null)
                     {
-                        // Find and remove the reminder
-                        var reminderToRemove = ViewModel.Reminders.FirstOrDefault(r => r.Id == reminderId);
-                        if (reminderToRemove != null)
-                        {
-                            Console.WriteLine($"Removing reminder: {reminderToRemove.Name}");
-                            
-                            // Stop the timer to avoid memory leaks
-                            reminderToRemove.StopTimer();
-                            
-                            // Remove from collection
-                            ViewModel.Reminders.Remove(reminderToRemove);
-                            
-                            // Save reminders
-                            ViewModel.SaveReminders();
-                        }
+                        Console.WriteLine($"Removing reminder: {reminderToRemove.Name}");
+                        
+                        // Stop the timer to avoid memory leaks
+                        reminderToRemove.StopTimer();
+                        
+                        // Remove from collection
+                        ViewModel.Reminders.Remove(reminderToRemove);
+                        
+                        // Save reminders
+                        ViewModel.SaveReminders();
                     }
                 }
             }

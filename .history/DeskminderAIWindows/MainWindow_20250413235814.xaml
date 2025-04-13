@@ -240,14 +240,13 @@
         </VisualStateManager.VisualStateGroups>
         
         <!-- Main Container -->
-        <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Vertical" Spacing="12">
             <!-- Floating Add Button (Icon-only mode) -->
             <Button x:Name="AddButtonOnly" 
                     Style="{StaticResource AddButtonStyle}"
                     Visibility="Visible"
                     Click="AddButtonOnly_Click"
-                    ToolTip="Add Reminder"
-                    Margin="0,0,0,12" />
+                    ToolTip="Add Reminder" />
             
             <!-- Timer Selection Panel -->
             <Border x:Name="TimerPanel"
@@ -257,7 +256,7 @@
                     Height="Auto"
                     Visibility="Collapsed"
                     VerticalAlignment="Top"
-                    Margin="5,5,0,12"
+                    Margin="5,5,0,0"
                     Padding="10"
                     Effect="{StaticResource ButtonShadow}">
                 <Grid>
@@ -368,6 +367,7 @@
             <!-- Active Reminders Panel -->
             <StackPanel x:Name="ActiveRemindersPanel"
                        Orientation="Vertical"
+                       Spacing="12"
                        HorizontalAlignment="Center"
                        Visibility="Visible">
                 <!-- Reminders will be added here dynamically -->
@@ -378,7 +378,7 @@
                     <ItemsControl ItemsSource="{Binding Reminders}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Button Style="{StaticResource ReminderButtonStyle}" Margin="0,2,0,2">
+                                <Button Style="{StaticResource ReminderButtonStyle}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>

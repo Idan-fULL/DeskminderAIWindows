@@ -695,26 +695,22 @@ namespace DeskminderAI
                 Console.WriteLine("RemoveReminderButton_Click event triggered");
                 
                 // Get the reminder ID from the button's Tag
-                if (sender is Button button && button.Tag is string reminderIdStr)
+                if (sender is Button button && button.Tag is string reminderId)
                 {
-                    // Parse the string ID to a Guid
-                    if (Guid.TryParse(reminderIdStr, out Guid reminderId))
+                    // Find and remove the reminder
+                    var reminderToRemove = ViewModel.Reminders.FirstOrDefault(r => r.Id == reminderId);
+                    if (reminderToRemove != null)
                     {
-                        // Find and remove the reminder
-                        var reminderToRemove = ViewModel.Reminders.FirstOrDefault(r => r.Id == reminderId);
-                        if (reminderToRemove != null)
-                        {
-                            Console.WriteLine($"Removing reminder: {reminderToRemove.Name}");
-                            
-                            // Stop the timer to avoid memory leaks
-                            reminderToRemove.StopTimer();
-                            
-                            // Remove from collection
-                            ViewModel.Reminders.Remove(reminderToRemove);
-                            
-                            // Save reminders
-                            ViewModel.SaveReminders();
-                        }
+                        Console.WriteLine($"Removing reminder: {reminderToRemove.Name}");
+                        
+                        // Stop the timer to avoid memory leaks
+                        reminderToRemove.StopTimer();
+                        
+                        // Remove from collection
+                        ViewModel.Reminders.Remove(reminderToRemove);
+                        
+                        // Save reminders
+                        ViewModel.SaveReminders();
                     }
                 }
             }

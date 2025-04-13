@@ -137,33 +137,47 @@ namespace DeskminderAI
                 // Create a simple icon using a Canvas and shapes that TaskbarIcon can use
                 var canvas = new Canvas { Width = 32, Height = 32 };
                 
-                // Create a green sparkle-like icon
-                System.Windows.Shapes.Path sparkleCenter = new System.Windows.Shapes.Path
-                {
-                    Data = Geometry.Parse("M12,3 L13.5,8.5 L19,10 L13.5,11.5 L12,17 L10.5,11.5 L5,10 L10.5,8.5 Z"),
-                    Fill = new SolidColorBrush(WinColors.White),
-                    Width = 24,
-                    Height = 24
-                };
-                
-                canvas.Children.Add(new System.Windows.Shapes.Ellipse
+                // Add a green circle
+                var ellipse = new System.Windows.Shapes.Ellipse
                 {
                     Width = 32,
                     Height = 32,
-                    Fill = new LinearGradientBrush(WinColors.Green, WinColors.DarkGreen, new Point(0, 0), new Point(1, 1))
-                });
+                    Fill = new SolidColorBrush(WinColors.Green)
+                };
+                canvas.Children.Add(ellipse);
                 
-                Canvas.SetLeft(sparkleCenter, 4);
-                Canvas.SetTop(sparkleCenter, 4);
-                canvas.Children.Add(sparkleCenter);
+                // Add text
+                var text = new TextBlock
+                {
+                    Text = "AI",
+                    FontWeight = FontWeights.Bold,
+                    FontSize = 14,
+                    Foreground = new SolidColorBrush(WinColors.White),
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+                Canvas.SetLeft(text, 8);
+                Canvas.SetTop(text, 5);
+                canvas.Children.Add(text);
                 
                 // Measure and arrange the canvas
                 canvas.Measure(new WinSize(32, 32));
                 canvas.Arrange(new WinRect(0, 0, 32, 32));
                 
-                // Create a RenderTargetBitmap from the canvas
-                var renderBitmap = new RenderTargetBitmap(32, 32, 96, 96, PixelFormats.Pbgra32);
-                renderBitmap.Render(canvas);
+                // Create a visual brush from the canvas
+                var visualBrush = new VisualBrush(canvas);
+                
+                // Create a drawing visual
+                var drawingVisual = new DrawingVisual();
+                using (var dc = drawingVisual.RenderOpen())
+                {
+                    dc.DrawRectangle(visualBrush, null, new WinRect(0, 0, 32, 32));
+                }
+                
+                // Create a RenderTargetBitmap from the drawing visual
+                var renderBitmap = new RenderTargetBitmap(
+                    32, 32, 96, 96, PixelFormats.Pbgra32);
+                renderBitmap.Render(drawingVisual);
                 
                 // Set the TaskbarIcon's IconSource
                 if (TaskbarIcon != null)
@@ -200,13 +214,9 @@ namespace DeskminderAI
                     Console.WriteLine("TaskbarIcon visibility set to Visible");
                 }
                 
-                // Start with icon-only state
-                ChangeVisualState(STATE_ICON_ONLY);
+                // We won't change the visual state here anymore since App.xaml.cs handles it directly
                 
                 Console.WriteLine($"Window initialized with size {Width}x{Height}");
-                
-                // Load saved reminders
-                LoadExistingReminders();
             }
             catch (Exception ex)
             {
@@ -216,24 +226,11 @@ namespace DeskminderAI
             }
         }
         
-        private void LoadExistingReminders()
-        {
-            // Reminders are already loaded through the ViewModel
-            // Just make sure the UI is updated
-            if (ViewModel.Reminders.Count > 0)
-            {
-                Console.WriteLine($"Loaded {ViewModel.Reminders.Count} existing reminders");
-            }
-        }
-        
         private void Window_MouseDown(object sender, WinMouseButtonEventArgs e)
         {
             try
             {
-                // Only start dragging if not clicking on a button
-                if (e.ChangedButton == MouseButton.Left && 
-                    !(e.OriginalSource is Button) && 
-                    !(e.OriginalSource is TextBlock && ((TextBlock)e.OriginalSource).IsDescendantOf(AddButtonOnly)))
+                if (e.ChangedButton == MouseButton.Left)
                 {
                     _isDragging = true;
                     _lastPosition = e.GetPosition(this);
@@ -284,16 +281,11 @@ namespace DeskminderAI
             {
                 base.OnMouseUp(e);
                 
-                if (e.ChangedButton == MouseButton.Left && _isDragging)
+                if (e.ChangedButton == MouseButton.Left)
                 {
                     _isDragging = false;
                     ReleaseMouseCapture();
                     Console.WriteLine("Window dragging ended");
-                    
-                    // Save the widget position
-                    Settings.Instance.WindowPositionX = Left;
-                    Settings.Instance.WindowPositionY = Top;
-                    Settings.Instance.Save();
                 }
             }
             catch (Exception ex)
@@ -311,6 +303,10 @@ namespace DeskminderAI
                 
                 // Ensure the window is visible and properly positioned
                 EnsureWindowVisibility();
+                
+                // Always show in the Timer state when clicked from tray
+                ChangeVisualState(STATE_TIMER);
+                ResizeWindowForState(STATE_TIMER);
                 
                 Console.WriteLine($"Window state: Visibility={Visibility}, State={WindowState}");
             }
@@ -386,7 +382,7 @@ namespace DeskminderAI
                 // Make window visible regardless of settings
                 this.Visibility = Visibility.Visible;
                 this.WindowState = WindowState.Normal;
-                this.ShowInTaskbar = false; // Keep it out of the taskbar
+                this.ShowInTaskbar = true;
                 
                 // Check if window is off-screen
                 bool isOffScreen = 
@@ -443,6 +439,7 @@ namespace DeskminderAI
                 
                 // Show timer panel
                 ChangeVisualState(STATE_TIMER);
+                ResizeWindowForState(STATE_TIMER);
                 
                 Console.WriteLine("Changed to timer state");
             }
@@ -504,12 +501,7 @@ namespace DeskminderAI
                     // Update the view model
                     ViewModel.NewReminderMinutes = newMinutes;
                     
-                    // Adjust the width of the timer slider
-                    double width = 120 + (newMinutes - 1) * 10;
-                    width = Math.Max(120, Math.Min(300, width));
-                    TimerPanel.Width = width;
-                    
-                    Console.WriteLine($"Duration drag at position {currentX}, deltaX: {deltaX}, minutes: {newMinutes}, width: {width}");
+                    Console.WriteLine($"Duration drag at position {currentX}, deltaX: {deltaX}, minutes: {newMinutes}");
                     
                     e.Handled = true;
                 }
@@ -570,39 +562,35 @@ namespace DeskminderAI
                 {
                     Console.WriteLine("VisualStateManager failed, setting visibility directly");
                     
-                    // Reset all panels
+                    // Reset all panels to collapsed
                     if (AddButtonOnly != null) AddButtonOnly.Visibility = Visibility.Collapsed;
                     if (TimerPanel != null) TimerPanel.Visibility = Visibility.Collapsed;
                     if (ReminderPanel != null) ReminderPanel.Visibility = Visibility.Collapsed;
+                    if (ActiveRemindersPanel != null) ActiveRemindersPanel.Visibility = Visibility.Collapsed;
                     
                     // Set the appropriate panel to visible
                     switch (stateName)
                     {
                         case STATE_ICON_ONLY:
                             if (AddButtonOnly != null) AddButtonOnly.Visibility = Visibility.Visible;
-                            Width = 50;
-                            Height = 300; // Taller to accomodate reminders
                             break;
                         case STATE_TIMER:
                             if (TimerPanel != null) TimerPanel.Visibility = Visibility.Visible;
-                            Width = 170;
-                            Height = 300; // Taller to accomodate reminders
                             break;
                         case STATE_REMINDER:
                             if (ReminderPanel != null) ReminderPanel.Visibility = Visibility.Visible;
-                            Width = 240;
-                            Height = 300; // Taller to accomodate reminders
+                            break;
+                        case STATE_ACTIVE_REMINDERS:
+                            if (ActiveRemindersPanel != null) ActiveRemindersPanel.Visibility = Visibility.Visible;
                             break;
                     }
                 }
-                
-                // Set background color based on state
-                Background = new SolidColorBrush(WinColor.FromArgb(1, 0, 0, 0)); // Transparent
                 
                 // Debug UI elements visibility
                 if (AddButtonOnly != null) Console.WriteLine($"AddButtonOnly visibility: {AddButtonOnly.Visibility}");
                 if (TimerPanel != null) Console.WriteLine($"TimerPanel visibility: {TimerPanel.Visibility}");
                 if (ReminderPanel != null) Console.WriteLine($"ReminderPanel visibility: {ReminderPanel.Visibility}");
+                if (ActiveRemindersPanel != null) Console.WriteLine($"ActiveRemindersPanel visibility: {ActiveRemindersPanel.Visibility}");
                 
                 // Force layout update
                 UpdateLayout();
@@ -613,6 +601,61 @@ namespace DeskminderAI
             }
         }
         
+        private void ResizeWindowForState(string stateName)
+        {
+            try
+            {
+                double oldWidth = Width;
+                double oldHeight = Height;
+                
+                switch (stateName)
+                {
+                    case STATE_ICON_ONLY:
+                        Width = 50;
+                        Height = 50;
+                        break;
+                    case STATE_TIMER:
+                        Width = 170;
+                        Height = 40;
+                        // Ensure window is visible and UI elements respond
+                        if (TimerPanel != null)
+                        {
+                            TimerPanel.Visibility = Visibility.Visible;
+                            TimerPanel.UpdateLayout();
+                        }
+                        break;
+                    case STATE_REMINDER:
+                        Width = 240;
+                        Height = 40;
+                        break;
+                    case STATE_ACTIVE_REMINDERS:
+                        Width = 170;
+                        Height = 150;
+                        break;
+                }
+                
+                Console.WriteLine($"Window resized from {oldWidth}x{oldHeight} to {Width}x{Height} for state: {stateName}");
+                
+                // Set background only transparent for icon-only mode
+                if (stateName == STATE_ICON_ONLY)
+                {
+                    Background = new SolidColorBrush(WinColors.Transparent);
+                }
+                else
+                {
+                    // For all other modes, ensure the background is visible
+                    Background = new SolidColorBrush(WinColor.FromArgb(230, 30, 30, 30));
+                }
+                
+                // Ensure window is visible on screen
+                EnsureWindowVisibility();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error resizing window: {ex.Message}");
+            }
+        }
+        
         // Timer panel buttons
         private void CloseTimer_Click(object sender, RoutedEventArgs e)
         {
@@ -620,6 +663,7 @@ namespace DeskminderAI
             {
                 Console.WriteLine("CloseTimer_Click event triggered");
                 ChangeVisualState(STATE_ICON_ONLY);
+                ResizeWindowForState(STATE_ICON_ONLY);
             }
             catch (Exception ex)
             {
@@ -637,6 +681,7 @@ namespace DeskminderAI
                 
                 // Show reminder name panel
                 ChangeVisualState(STATE_REMINDER);
+                ResizeWindowForState(STATE_REMINDER);
             }
             catch (Exception ex)
             {
@@ -651,6 +696,7 @@ namespace DeskminderAI
             {
                 Console.WriteLine("BackToTimer_Click event triggered");
                 ChangeVisualState(STATE_TIMER);
+                ResizeWindowForState(STATE_TIMER);
             }
             catch (Exception ex)
             {
@@ -674,12 +720,14 @@ namespace DeskminderAI
                 // Create and add the reminder
                 var reminder = new Reminder(reminderName, ViewModel.NewReminderMinutes);
                 ViewModel.Reminders.Add(reminder);
+                ViewModel.SelectedReminder = reminder;
                 
                 // Save reminders
                 ViewModel.SaveReminders();
                 
-                // Go back to icon-only state
-                ChangeVisualState(STATE_ICON_ONLY);
+                // Show active reminders
+                ChangeVisualState(STATE_ACTIVE_REMINDERS);
+                ResizeWindowForState(STATE_ACTIVE_REMINDERS);
             }
             catch (Exception ex)
             {
@@ -693,29 +741,27 @@ namespace DeskminderAI
             try
             {
                 Console.WriteLine("RemoveReminderButton_Click event triggered");
-                
-                // Get the reminder ID from the button's Tag
-                if (sender is Button button && button.Tag is string reminderIdStr)
+                if (ViewModel.SelectedReminder != null)
                 {
-                    // Parse the string ID to a Guid
-                    if (Guid.TryParse(reminderIdStr, out Guid reminderId))
+                    Console.WriteLine($"Removing reminder: {ViewModel.SelectedReminder.Name}");
+                    ViewModel.Reminders.Remove(ViewModel.SelectedReminder);
+                    
+                    // If there are more reminders, select the first one
+                    if (ViewModel.Reminders.Count > 0)
                     {
-                        // Find and remove the reminder
-                        var reminderToRemove = ViewModel.Reminders.FirstOrDefault(r => r.Id == reminderId);
-                        if (reminderToRemove != null)
-                        {
-                            Console.WriteLine($"Removing reminder: {reminderToRemove.Name}");
-                            
-                            // Stop the timer to avoid memory leaks
-                            reminderToRemove.StopTimer();
-                            
-                            // Remove from collection
-                            ViewModel.Reminders.Remove(reminderToRemove);
-                            
-                            // Save reminders
-                            ViewModel.SaveReminders();
-                        }
+                        ViewModel.SelectedReminder = ViewModel.Reminders[0];
+                        Console.WriteLine($"Selected reminder: {ViewModel.SelectedReminder.Name}");
                     }
+                    else
+                    {
+                        // No more reminders, return to icon-only mode
+                        ChangeVisualState(STATE_ICON_ONLY);
+                        ResizeWindowForState(STATE_ICON_ONLY);
+                        Console.WriteLine("No reminders left, changing to icon-only mode");
+                    }
+                    
+                    // Save reminders
+                    ViewModel.SaveReminders();
                 }
             }
             catch (Exception ex)
@@ -736,6 +782,7 @@ namespace DeskminderAI
                 
                 // Switch to timer state
                 ChangeVisualState(STATE_TIMER);
+                ResizeWindowForState(STATE_TIMER);
                 
                 // Force re-render
                 UpdateLayout();
@@ -746,26 +793,6 @@ namespace DeskminderAI
             {
                 Console.WriteLine($"Error showing timer panel: {ex.Message}");
             }
-        }
-    }
-    
-    // Extension method to check if an element is a descendant of another
-    public static class UIElementExtensions
-    {
-        public static bool IsDescendantOf(this FrameworkElement element, DependencyObject parent)
-        {
-            DependencyObject current = element;
-            
-            while (current != null)
-            {
-                if (current == parent)
-                    return true;
-                
-                // Traverse up the visual tree
-                current = VisualTreeHelper.GetParent(current);
-            }
-            
-            return false;
         }
     }
 } 
