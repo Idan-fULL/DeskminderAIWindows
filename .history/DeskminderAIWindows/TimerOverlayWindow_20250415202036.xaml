@@ -1,0 +1,246 @@
+<Window x:Class="DeskminderAI.TimerOverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DeskminderAI"
+        mc:Ignorable="d"
+        Title="Timer Selection" 
+        Height="{x:Static SystemParameters.PrimaryScreenHeight}"
+        Width="{x:Static SystemParameters.PrimaryScreenWidth}"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        Background="#80000000"
+        WindowStartupLocation="Manual"
+        Left="0"
+        Top="0"
+        Topmost="True"
+        ShowInTaskbar="False"
+        KeyDown="Window_KeyDown">
+
+    <Window.Resources>
+        <!-- Styles from main window -->
+        <Style x:Key="TimerContainerStyle" TargetType="Border">
+            <Setter Property="Background" Value="#222222"/>
+            <Setter Property="CornerRadius" Value="20"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect ShadowDepth="2" 
+                                    Direction="270"
+                                    Color="Black" 
+                                    Opacity="0.4" 
+                                    BlurRadius="8"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#2A2A2A"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <!-- Custom Font Family -->
+        <FontFamily x:Key="TechFont">Segoe UI, Arial</FontFamily>
+        
+        <!-- Add TimerTextBrush resource -->
+        <SolidColorBrush x:Key="TimerTextBrush" Color="White"/>
+        
+        <Style x:Key="TimerTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="{StaticResource TechFont}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect ShadowDepth="1" 
+                                    Direction="270" 
+                                    Color="Black" 
+                                    Opacity="0.3" 
+                                    BlurRadius="1"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="#E0E0E0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <!-- Seconds Display Style -->
+        <Style x:Key="SecondsTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#AAAAAA"/>
+            <Setter Property="FontFamily" Value="{StaticResource TechFont}"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="4,0,0,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Opacity" Value="0"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect ShadowDepth="1" 
+                                    Direction="270" 
+                                    Color="Black" 
+                                    Opacity="0.3" 
+                                    BlurRadius="1"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="ConfirmButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="26"/>
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="Background" Value="#4CAF50"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Ellipse Fill="{TemplateBinding Background}">
+                                <Ellipse.Effect>
+                                    <DropShadowEffect ShadowDepth="2" Direction="270" Color="Black" Opacity="0.4" BlurRadius="4"/>
+                                </Ellipse.Effect>
+                            </Ellipse>
+                            
+                            <!-- Shine Overlay for Hover Effect -->
+                            <Ellipse x:Name="ShineOverlay" Fill="White" Opacity="0">
+                                <Ellipse.Effect>
+                                    <BlurEffect Radius="4"/>
+                                </Ellipse.Effect>
+                            </Ellipse>
+                            
+                            <TextBlock Text="✓" 
+                                       FontSize="14" 
+                                       FontWeight="Bold"
+                                       FontFamily="{StaticResource TechFont}"
+                                       Foreground="{TemplateBinding Foreground}" 
+                                       HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center"
+                                       Margin="0,1,0,0"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="1.1" ScaleY="1.1"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter TargetName="ShineOverlay" Property="Opacity" Value="0.3"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- Add smooth animation resources -->
+        <QuadraticEase x:Key="EaseOutQuad" EasingMode="EaseOut"/>
+    </Window.Resources>
+    
+    <!-- Main content - centered timer selection -->
+    <Grid>
+        <!-- Semi-transparent background -->
+        <Rectangle Fill="#80000000" MouseDown="Rectangle_MouseDown"/>
+        
+        <!-- Timer Selection Display -->
+        <Border x:Name="TimerSelectionDisplay"
+                Style="{StaticResource TimerContainerStyle}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                MinWidth="180"
+                MouseDown="TimerDisplay_MouseDown"
+                MouseMove="TimerDisplay_MouseMove"
+                MouseUp="TimerDisplay_MouseUp">
+            <Border.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Border.RenderTransform>
+            
+            <Grid Margin="12,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Minutes Display -->
+                <StackPanel Grid.Column="0" 
+                          Orientation="Horizontal" 
+                          HorizontalAlignment="Left"
+                          x:Name="TimerDisplayPanel"
+                          Visibility="Visible">
+                    <TextBlock x:Name="TimerValueDisplay"
+                             Style="{StaticResource TimerTextStyle}"
+                             Text="{Binding Minutes, StringFormat='{}{0}'}"
+                             Visibility="Visible"/>
+                    <TextBlock Text=" min"
+                             Style="{StaticResource TimerTextStyle}"/>
+                    <TextBlock x:Name="SecondsDisplay"
+                             Style="{StaticResource SecondsTextStyle}"
+                             Text="{Binding Seconds, StringFormat=' {0} sec'}"
+                             Visibility="Visible"/>
+                </StackPanel>
+                
+                <!-- Text Input (For reminder text) -->
+                <TextBox x:Name="ReminderTextInput"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Background="Transparent"
+                        Foreground="White"
+                        BorderBrush="Transparent"
+                        BorderThickness="0"
+                        MinWidth="120"
+                        FontSize="16"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        TextAlignment="Center"
+                        CaretBrush="White"
+                        SelectionBrush="#4CAF50"
+                        KeyDown="ReminderTextInput_KeyDown"
+                        Visibility="Collapsed"/>
+                
+                <!-- Selected Time Display (visible during text entry) -->
+                <TextBlock x:Name="SelectedTimeDisplay"
+                          Grid.Column="0"
+                          Grid.ColumnSpan="2"
+                          Text=""
+                          Foreground="#AAAAAA"
+                          FontSize="12"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Bottom"
+                          Margin="0,0,0,3"
+                          Visibility="Collapsed"/>
+                
+                <!-- Confirm Button -->
+                <Button x:Name="ConfirmTimeButton" 
+                        Grid.Column="2" 
+                        Style="{StaticResource ConfirmButtonStyle}"
+                        Width="24"
+                        Height="24"
+                        Margin="8,0,0,0"
+                        Visibility="Visible"
+                        Click="ConfirmTimeButton_Click"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window> 
