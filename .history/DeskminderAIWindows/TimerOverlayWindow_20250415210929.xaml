@@ -22,8 +22,8 @@
     <Window.Resources>
         <!-- Styles from main window -->
         <Style x:Key="TimerContainerStyle" TargetType="Border">
-            <Setter Property="Background" Value="#CC0D47A1"/>
-            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Background" Value="#0D47A1"/>
+            <Setter Property="CornerRadius" Value="18"/>
             <Setter Property="Height" Value="34"/>
             <Setter Property="Effect">
                 <Setter.Value>
@@ -36,7 +36,7 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#CC1565C0"/>
+                    <Setter Property="Background" Value="#1565C0"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -46,8 +46,8 @@
         
         <Style x:Key="TimerTextStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontFamily" Value="Bahnschrift"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontFamily" Value="Segoe UI Light"/>
+            <Setter Property="FontWeight" Value="Light"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Style.Triggers>
@@ -60,8 +60,8 @@
         <!-- Seconds Display Style -->
         <Style x:Key="SecondsTextStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="#BBDEFB"/>
-            <Setter Property="FontFamily" Value="Bahnschrift"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontFamily" Value="Segoe UI Light"/>
+            <Setter Property="FontWeight" Value="Light"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Margin" Value="4,0,0,0"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -71,7 +71,7 @@
         <Style x:Key="ConfirmButtonStyle" TargetType="Button">
             <Setter Property="Width" Value="24"/>
             <Setter Property="Height" Value="24"/>
-            <Setter Property="Background" Value="#CC0D47A1"/>
+            <Setter Property="Background" Value="#0D47A1"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Template">
@@ -166,17 +166,15 @@
                         Foreground="White"
                         BorderBrush="Transparent"
                         BorderThickness="0"
-                        MinWidth="110"
-                        FontSize="14"
-                        FontFamily="Bahnschrift"
-                        FontWeight="SemiBold"
+                        MinWidth="120"
+                        FontSize="16"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center"
                         TextAlignment="Center"
                         CaretBrush="White"
-                        SelectionBrush="#1565C0"
+                        SelectionBrush="#4CAF50"
                         KeyDown="ReminderTextInput_KeyDown"
                         Visibility="Collapsed"/>
                 

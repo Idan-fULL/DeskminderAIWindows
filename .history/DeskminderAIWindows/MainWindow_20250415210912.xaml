@@ -337,8 +337,8 @@
         <!-- Timer Display Style -->
         <Style x:Key="TimerDisplayStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontFamily" Value="Bahnschrift"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontFamily" Value="Segoe UI Light"/>
+            <Setter Property="FontWeight" Value="Light"/>
             <Setter Property="FontSize" Value="11"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -347,8 +347,8 @@
         
         <!-- Timer Container Style - for the Border that contains timer elements -->
         <Style x:Key="TimerContainerStyle" TargetType="Border">
-            <Setter Property="Background" Value="#CC0D47A1"/>
-            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Background" Value="#0D47A1"/>
+            <Setter Property="CornerRadius" Value="18"/>
             <Setter Property="Padding" Value="10,6,10,6"/>
             <Setter Property="Effect">
                 <Setter.Value>
@@ -361,15 +361,15 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#CC1565C0"/>
+                    <Setter Property="Background" Value="#1565C0"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
         
         <!-- Countdown Timer Style -->
         <Style x:Key="CountdownTimerStyle" TargetType="Border">
-            <Setter Property="Background" Value="#CC0D47A1"/>
-            <Setter Property="CornerRadius" Value="20"/>
+            <Setter Property="Background" Value="#0D47A1"/>
+            <Setter Property="CornerRadius" Value="50"/>
             <Setter Property="Width" Value="42"/>
             <Setter Property="Height" Value="42"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -401,7 +401,7 @@
                     <DropShadowEffect ShadowDepth="0" 
                                     Direction="0" 
                                     Color="White" 
-                                    Opacity="0.7" 
+                                    Opacity="0.8" 
                                     BlurRadius="5"/>
                 </Setter.Value>
             </Setter>
@@ -419,7 +419,7 @@
                             </DoubleAnimation>
                             <DoubleAnimation 
                                 Storyboard.TargetProperty="Effect.Opacity"
-                                From="0.5" To="0.9" Duration="0:0:1.2"
+                                From="0.6" To="1.0" Duration="0:0:1.2"
                                 AutoReverse="True">
                                 <DoubleAnimation.EasingFunction>
                                     <SineEase EasingMode="EaseInOut"/>
@@ -464,14 +464,14 @@
                         <Ellipse Style="{StaticResource SparkleRingStyle}"/>
                         
                         <!-- Background circle -->
-                        <Ellipse Width="34" Height="34" Fill="#CC0D47A1"/>
+                        <Ellipse Width="34" Height="34" Fill="#0D47A1"/>
                         
                         <!-- Text Display -->
                         <TextBlock Text="{Binding TimeLeftDisplay}" 
                                   Foreground="White" 
                                   FontSize="12"
-                                  FontFamily="Bahnschrift"
-                                  FontWeight="SemiBold"
+                                  FontFamily="Segoe UI Light"
+                                  FontWeight="Light"
                                   HorizontalAlignment="Center" 
                                   VerticalAlignment="Center"
                                   TextAlignment="Center"
@@ -493,8 +493,8 @@
                     <Border Grid.Column="1"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center" 
-                            Background="#CC0D47A1"
-                            CornerRadius="12"
+                            Background="#0D47A1"
+                            CornerRadius="16"
                             Padding="15,6,15,6"
                             Margin="8,0,0,0"
                             x:Name="MinutesBubble"
@@ -502,8 +502,8 @@
                         <TextBlock Text="{Binding DisplayTime}"
                                    Foreground="White"
                                    FontSize="12"
-                                   FontFamily="Bahnschrift"
-                                   FontWeight="SemiBold"
+                                   FontFamily="Segoe UI Light"
+                                   FontWeight="Light"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
                                    TextAlignment="Center"
@@ -515,16 +515,16 @@
                     <Border Grid.Column="1"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
-                            Background="#CC0D47A1"
-                            CornerRadius="8"
+                            Background="#0D47A1"
+                            CornerRadius="10"
                             Padding="10,5,10,5"
                             Visibility="Collapsed"
                             x:Name="ReminderText"
                             Margin="8,0,0,0">
                         <TextBlock Foreground="White"
                                    FontSize="11"
-                                   FontFamily="Bahnschrift"
-                                   FontWeight="SemiBold"
+                                   FontFamily="Segoe UI Light"
+                                   FontWeight="Light"
                                    TextWrapping="Wrap"
                                    Margin="2,0,2,0">
                             <TextBlock.Text>
