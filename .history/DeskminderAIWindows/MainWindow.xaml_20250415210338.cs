@@ -175,11 +175,11 @@ namespace DeskminderAI
             {
                 Console.WriteLine("Creating taskbar icon");
                 
-                // Create a simple blue circle with white stars icon
+                // Create a simple green circle with white stars icon
                 var iconBitmap = new System.Drawing.Bitmap(32, 32);
                 using (var g = System.Drawing.Graphics.FromImage(iconBitmap))
                 {
-                    g.Clear(System.Drawing.Color.FromArgb(25, 118, 210)); // Blue background (#1976D2)
+                    g.Clear(System.Drawing.Color.FromArgb(76, 175, 80)); // Green background
                     
                     // Draw white stars (simplified)
                     using (var brush = new System.Drawing.SolidBrush(System.Drawing.Color.White))

@@ -455,7 +455,7 @@
                         <Ellipse Style="{StaticResource SparkleRingStyle}"/>
                         
                         <!-- Black background circle -->
-                        <Ellipse Width="40" Height="40" Fill="#1976D2"/>
+                        <Ellipse Width="40" Height="40" Fill="#222222"/>
                         
                         <!-- Text Display -->
                         <TextBlock Text="{Binding TimeLeftDisplay}" 
@@ -483,7 +483,7 @@
                     <Border Grid.Column="1"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center" 
-                            Background="#1976D2"
+                            Background="#222222"
                             CornerRadius="20"
                             Padding="18,8,18,8"
                             Margin="10,0,0,0"
@@ -504,7 +504,7 @@
                     <Border Grid.Column="1"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
-                            Background="#1976D2"
+                            Background="#222222"
                             CornerRadius="12"
                             Padding="12,6,12,6"
                             Visibility="Collapsed"
