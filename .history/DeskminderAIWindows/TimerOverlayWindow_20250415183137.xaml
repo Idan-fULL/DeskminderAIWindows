@@ -1,0 +1,172 @@
+<Window x:Class="DeskminderAI.TimerOverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DeskminderAI"
+        mc:Ignorable="d"
+        Title="Timer Selection" 
+        Height="{x:Static SystemParameters.PrimaryScreenHeight}"
+        Width="{x:Static SystemParameters.PrimaryScreenWidth}"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        Background="#80000000"
+        WindowStartupLocation="Manual"
+        Left="0"
+        Top="0"
+        Topmost="True"
+        ShowInTaskbar="False"
+        KeyDown="Window_KeyDown">
+
+    <Window.Resources>
+        <!-- Styles from main window -->
+        <Style x:Key="TimerContainerStyle" TargetType="Border">
+            <Setter Property="Background" Value="#222222"/>
+            <Setter Property="CornerRadius" Value="20"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect ShadowDepth="2" 
+                                    Direction="270"
+                                    Color="Black" 
+                                    Opacity="0.4" 
+                                    BlurRadius="8"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#2A2A2A"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <!-- Add TimerTextBrush resource -->
+        <SolidColorBrush x:Key="TimerTextBrush" Color="White"/>
+        
+        <Style x:Key="TimerDisplayStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+        </Style>
+        
+        <Style x:Key="ConfirmButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="26"/>
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="Background" Value="#4CAF50"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Ellipse Fill="{TemplateBinding Background}">
+                                <Ellipse.Effect>
+                                    <DropShadowEffect ShadowDepth="2" Direction="270" Color="Black" Opacity="0.4" BlurRadius="4"/>
+                                </Ellipse.Effect>
+                            </Ellipse>
+                            <TextBlock Text="✓" 
+                                       FontSize="14" 
+                                       FontWeight="Bold"
+                                       Foreground="{TemplateBinding Foreground}" 
+                                       HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center"
+                                       Margin="0,1,0,0"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    
+    <!-- Main content - centered timer selection -->
+    <Grid>
+        <!-- Semi-transparent background without blur -->
+        <Rectangle Fill="#80000000" MouseDown="Rectangle_MouseDown"/>
+        
+        <!-- Timer Selection Display -->
+        <Border x:Name="TimerSelectionDisplay"
+                Style="{StaticResource TimerContainerStyle}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                MinWidth="180"
+                Height="36"
+                MouseDown="TimerDisplay_MouseDown"
+                MouseMove="TimerDisplay_MouseMove"
+                MouseUp="TimerDisplay_MouseUp">
+            <Border.Resources>
+                <!-- Add animation for width changes -->
+                <Style TargetType="Border">
+                    <Style.Triggers>
+                        <Trigger Property="MinWidth" Value="{Binding RelativeSource={RelativeSource Self}, Path=MinWidth}">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Width"
+                                                       Duration="0:0:0.2"
+                                                       EasingFunction="{StaticResource EaseOutQuad}"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Resources>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Time Text / Input Field -->
+                <Grid Grid.Column="0">
+                    <!-- Timer Text (Shown during dragging) -->
+                    <TextBlock x:Name="TimerValueDisplay"
+                              Text="{Binding Minutes, StringFormat='{}{0} min'}" 
+                              Style="{StaticResource TimerDisplayStyle}"
+                              Foreground="White"
+                              FontSize="16"
+                              FontWeight="SemiBold"
+                              Margin="10,0,10,0"
+                              HorizontalAlignment="Left"
+                              Visibility="Visible"/>
+                    
+                    <!-- Text Input (For reminder text, initially hidden) -->
+                    <TextBox x:Name="ReminderTextInput"
+                            Grid.Column="0"
+                            Background="Transparent"
+                            Foreground="White"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            Margin="10,0,10,0"
+                            MinWidth="120"
+                            FontSize="16"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            TextAlignment="Center"
+                            CaretBrush="White"
+                            SelectionBrush="#4CAF50"
+                            KeyDown="ReminderTextInput_KeyDown"
+                            Visibility="Collapsed"
+                            Text=""/>
+                </Grid>
+                
+                <!-- Confirm Button - visible from the start -->
+                <Button x:Name="ConfirmTimeButton" 
+                        Grid.Column="1" 
+                        Style="{StaticResource ConfirmButtonStyle}"
+                        Width="24"
+                        Height="24"
+                        Margin="5,0,8,0"
+                        Visibility="Visible"
+                        Click="ConfirmTimeButton_Click"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window> 
